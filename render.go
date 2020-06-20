@@ -147,7 +147,7 @@ func (r *Renderer) renderToken(tokens []Token, idx int, options RenderOptions) {
 		r.w.WriteString(tok.Content)
 
 	case *Image:
-		r.w.WriteString(`<img src="`)
+		r.w.WriteString(`<figure><img loading="lazy" src="`)
 		html.WriteEscapedString(r.w, tok.Src)
 		r.w.WriteString(`" alt="`)
 		r.renderInlineAsText(tok.Tokens)
@@ -160,9 +160,14 @@ func (r *Renderer) renderToken(tokens []Token, idx int, options RenderOptions) {
 		}
 		if options.XHTML {
 			r.w.WriteString(" />")
+
 		} else {
-			r.w.WriteByte('>')
+			r.w.WriteString(`>`)
 		}
+		r.w.WriteString(`<figcaption>`)
+		html.WriteEscapedString(r.w, tok.Title)
+		r.w.WriteString(`</figcaption>`)
+		r.w.WriteString("</figure>")
 
 	case *LinkClose:
 		r.w.WriteString("</a>")
